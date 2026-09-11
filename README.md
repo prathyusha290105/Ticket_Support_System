@@ -103,7 +103,7 @@ Customer_support_ticketing_system/
 │   │   └── app.js                    # Express app initialization & middleware stack
 │   ├── server.js                     # HTTP server entry point
 │   ├── tests/
-│   │   └── api.test.js               # Automated integration test suite (14 tests)
+│   │   └── api.test.js               # Automated integration test suite (15 tests)
 │   ├── .env.example
 │   └── package.json
 │
@@ -424,7 +424,7 @@ cd backend
 npm test
 ```
 
-### Test Coverage (14 Comprehensive Test Cases)
+### Test Coverage (15 Comprehensive Test Cases)
 1. **Health Check:** `GET /api/health` returns status `UP`.
 2. **Customer Authentication:** `POST /api/auth/login` returns valid JWT and user payload.
 3. **Agent Authentication:** `POST /api/auth/login` verifies agent credentials and role.
@@ -436,9 +436,10 @@ npm test
 9. **Agent Assignment:** Agent assigns ticket to self; status automatically transitions to `IN_PROGRESS`.
 10. **Status Lifecycle:** Agent updates ticket status to `RESOLVED`.
 11. **Conversation Reply:** Customer posts reply to ticket conversation thread.
-12. **Thread Retrieval:** `GET /api/tickets/:id/messages` returns messages populated with author roles.
-13. **Dynamic Dashboard:** Database aggregation calculates accurate real-time metrics.
-14. **Search & Filter:** Multi-criteria queries filter correctly by status and priority.
+12. **Close Ticket:** Agent closes the ticket after customer reply; status transitions to `CLOSED`.
+13. **Thread Retrieval:** `GET /api/tickets/:id/messages` returns messages populated with author roles.
+14. **Dynamic Dashboard:** Database aggregation calculates accurate real-time metrics.
+15. **Search & Filter:** Multi-criteria queries filter correctly by status and priority.
 
 ---
 

@@ -160,8 +160,22 @@ async function runTests() {
     assert.strictEqual(messageRes.data.data.sender.role, 'CUSTOMER');
     console.log('✓ Message replied and conversation timeline updated');
 
-    // 12. Retrieve conversation messages
-    console.log('Test 12: GET /api/tickets/:id/messages');
+        // 12. Agent closes the ticket after customer reply
+    console.log('Test 12: PATCH /api/tickets/:id (Close Ticket)');
+
+    const closeTicketRes = await request(`/api/tickets/${newTicketId}`, {
+      method: 'PATCH',
+      headers: { Authorization: `Bearer ${agentToken}` },
+      body: { status: 'CLOSED' }
+    });
+
+    assert.strictEqual(closeTicketRes.status, 200);
+    assert.strictEqual(closeTicketRes.data.data.status, 'CLOSED');
+
+    console.log('✓ Agent updated ticket status to CLOSED');
+
+    // 13. Retrieve conversation messages
+    console.log('Test 13: GET /api/tickets/:id/messages');
     const getMessagesRes = await request(`/api/tickets/${newTicketId}/messages`, {
       headers: { Authorization: `Bearer ${agentToken}` }
     });
@@ -169,8 +183,8 @@ async function runTests() {
     assert.ok(getMessagesRes.data.data.length >= 1);
     console.log('✓ Conversation thread fetched with populated sender role');
 
-    // 13. Dashboard statistics
-    console.log('Test 13: GET /api/dashboard/stats');
+    // 14. Dashboard statistics
+    console.log('Test 14: GET /api/dashboard/stats');
     const agentStatsRes = await request('/api/dashboard/stats', {
       headers: { Authorization: `Bearer ${agentToken}` }
     });
@@ -180,8 +194,8 @@ async function runTests() {
     assert.ok(typeof agentStatsRes.data.data.resolved === 'number');
     console.log('✓ Dynamic dashboard statistics calculated accurately');
 
-    // 14. Search and Filter
-    console.log('Test 14: Search & Filter query tests');
+    // 15. Search and Filter
+    console.log('Test 15: Search & Filter query tests');
     const searchRes = await request('/api/tickets?status=RESOLVED&priority=MEDIUM', {
       headers: { Authorization: `Bearer ${agentToken}` }
     });
@@ -190,7 +204,7 @@ async function runTests() {
     console.log('✓ Search and filter by status and priority verified');
 
     console.log('\n========================================');
-    console.log('ALL 14 BACKEND INTEGRATION TESTS PASSED!');
+    console.log('ALL 15 BACKEND INTEGRATION TESTS PASSED!');
     console.log('========================================');
   } finally {
     if (server) server.close();

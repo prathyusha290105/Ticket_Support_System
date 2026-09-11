@@ -12,24 +12,26 @@ const generateToken = (userId) => {
 };
 
 /**
- * Register a new user
+ * Register a new customer user.
+ *
+ * Public registration must NEVER allow a caller to create
+ * an AGENT account. Agent accounts are provisioned separately
+ * through the seed/admin process.
  */
-const registerUser = async ({ name, email, password, role }) => {
+const registerUser = async ({ name, email, password }) => {
   const existingUser = await User.findOne({ email: email.toLowerCase() });
+
   if (existingUser) {
     const error = new Error('An account with this email already exists.');
     error.statusCode = 400;
     throw error;
   }
 
-  // Enforce customer role by default unless explicitly allowed
-  const assignedRole = role === 'AGENT' ? 'AGENT' : 'CUSTOMER';
-
   const user = await User.create({
     name: name.trim(),
     email: email.toLowerCase().trim(),
     password,
-    role: assignedRole
+    role: 'CUSTOMER'
   });
 
   const token = generateToken(user._id);
@@ -51,6 +53,7 @@ const registerUser = async ({ name, email, password, role }) => {
  */
 const loginUser = async ({ email, password }) => {
   const user = await User.findOne({ email: email.toLowerCase().trim() });
+
   if (!user) {
     const error = new Error('Invalid email or password.');
     error.statusCode = 401;
@@ -58,6 +61,7 @@ const loginUser = async ({ email, password }) => {
   }
 
   const isMatch = await user.comparePassword(password);
+
   if (!isMatch) {
     const error = new Error('Invalid email or password.');
     error.statusCode = 401;
